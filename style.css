@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+:root {
+  --dark-purkpe: #4531B1;
+  --purple: #A836AD;
+  --pink: #F16896;
+  --light-yellow: #FFF0A4;
+
+  --background-color: var(--dark-purkpe);
+  --text-color: var(--light-yellow);
+  --text-highlight-color: var(--pink);
+  --container-color: var(--purple);
+
+  --container-padding: 3em;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: "JetBrains Mono", monospace;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  margin: 0;
+  padding: var(--container-padding);
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  background-color: var(--container-color);
+  padding: 1em;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-width: 60em;
+  margin: 0 auto;
+  box-shadow:
+    0.5em 0.5em 0 var(--pink),
+    1em 1em 0 var(--light-yellow);
+}
+
+.terminal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  width: 100%;
+  height: fit-content;
+
+  hr {
+    border: none;
+    border-top: 1px dashed var(--text-highlight-color);
+    margin: 0;
+  }
+
+  .line {
+    display: flex;
+    margin: 0;
+    font-size: 1.25em;
+    max-width: 100%;
+    min-height: 1.25em;
+
+    &.centered {
+      justify-content: center;
+    }
+
+    .large-text {
+      font-size: 1.5em;
+    }
+
+    .muted {
+      color: var(--text-highlight-color);
+    }
+
+    .link {
+      text-decoration: underline;
+      cursor: pointer;
+      transition: color 0.2s;
+
+      &:hover {
+        color: var(--pink);
+      }
+    }
+
+    .input {
+      flex: 1;
+      white-space: normal;
+      overflow-wrap: break-word;
+      width: 1px;
+      outline: none;
+    }
+  }
+}
