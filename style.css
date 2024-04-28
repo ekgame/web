@@ -61,7 +61,7 @@ body {
   }
 
   .line {
-    display: flex;
+    display: block;
     flex-wrap: wrap;
     white-space: break-spaces;
     margin: 0;

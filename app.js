@@ -2,12 +2,29 @@ class Interpreter {
   constructor(terminal) {
     this.terminal = terminal;
     this.commands = {
-      "profile": this.profile,
-      "contact": this.contact,
-      "links": this.links,
-      "clear": this.clear,
-      "cls": this.clear,
-      "history": this.history,
+      "profile": this.profile.bind(this),
+      "contact": this.contact.bind(this),
+      "links": this.links.bind(this),
+      "clear": this.clear.bind(this),
+      "cls": this.clear.bind(this),
+      "history": this.history.bind(this),
+      "projects": this.projects.bind(this),
+      "project": this.projects.bind(this),
+    };
+
+    this.projects = {
+      "this": {
+        callback: this.projectThis.bind(this),
+        description: "This website.",
+      },
+      "heatmap": {
+        callback: this.projectHeatmap.bind(this),
+        description: "osu! heatmap generator.",
+      },
+      "uiua": {
+        callback: this.projectUiua.bind(this),
+        description: "Various Uiua modules.",
+      },
     };
   }
 
@@ -64,7 +81,7 @@ class Interpreter {
       });
       o.separator();
       o.line(o => {
-        o.text("Hello! I'm Ernestas, a generalist software engineer - always ready to bend computers to my will, take on interesting challanges, improve and learn new things along the way.");
+        o.text("Hello! I'm Ernestas, a generalist software engineer - always ready to bend computers to my will, take on interesting challenges, improve and learn new things along the way.");
       });
       o.blankLine();
       o.line(o => {
@@ -133,7 +150,7 @@ class Interpreter {
     await this.terminal.output(o => {
       o.blankLine();
       o.line(o => {
-        o.text("2015 - 2018");
+        o.text("2014 - 2018");
         o.muted(" / ");
         o.text("Student at Kaunas University of Technology.");
       });
@@ -160,6 +177,180 @@ class Interpreter {
     });
   }
 
+  async projects(args) {
+    if (args.length > 0) {
+      const projectName = args[0];
+      const project = this.projects[projectName];
+      if (!project) {
+        await this.terminal.output(o => {
+          o.line(o => {
+            o.text("Project not found: ");
+            o.muted(projectName);
+          });
+        });
+        return Promise.resolve();
+      }
+
+      await project.callback();
+      return Promise.resolve();
+    }
+
+    await this.terminal.output(o => {
+      o.blankLine();
+      o.line(o => {
+        o.largeText("Projects");
+        o.lineBreak();
+        o.text("Some of the personal projects I have worked on.");
+      });
+      o.separator();
+      const longestProjectName = Math.max(...Object.keys(this.projects).map(name => name.length));
+      for (const [name, project] of Object.entries(this.projects)) {
+        o.line(o => {
+          o.link(name, () => {
+            this.terminal.animateInput(`project ${name}`);
+          });
+          o.text(" ".repeat(longestProjectName - name.length));
+          o.muted(" - ");
+          o.text(project.description);
+        });
+      }
+      o.blankLine();
+    });
+
+    return Promise.resolve();
+  }
+
+  async projectThis() {
+    await this.terminal.output(o => {
+      o.blankLine();
+      o.line(o => {
+        o.largeText("This website");
+      });
+      o.separator();
+      o.line(o => {
+        o.text("This website was created as a personal project to showcase my skills and experience. It is a simple faux-terminal that can execute commands and display information about me. ");
+      });
+      o.blankLine();
+      o.line(o => {
+        o.text("While I'm not a wizard at using the command line, I can find my way around it. I really like the aesthetic of the terminal and I felt like it would be an original take on a personal website. ");
+        o.text("I'm not sure if it's the best or even a user friendly user experience, but it's definitely fun to use and I hope it conveys my technical background well.");
+      });
+      o.blankLine();
+      o.line(o => {
+        o.text("The website is built using plain vanilla HTML, CSS and JavaScript - no frameworks, no transpilers. ");
+        o.text("While I am familiar with the cutting-edge technologies for web development, they would be an overkill for a project like this and I chose not to use them.");
+      });
+      o.blankLine();
+      o.line(o => {
+        o.text("I hope the typing animation was enough to convey that you can type in commands on your own, you don't have to just follow links. ");
+        o.text("If you're even a little bit familiar with Linux terminal commands, there might be something hidden waiting for you.");
+      });
+      o.blankLine();
+    });
+
+    return Promise.resolve();
+  }
+
+  async projectHeatmap() {
+    await this.terminal.output(o => {
+      o.blankLine();
+      o.line(o => {
+        o.largeText("osu! heatmap generator");
+      });
+      o.separator();
+      o.line(o => {
+        o.text("See the website here: ");
+        o.link("https://osu-heatmap.ekga.me/", () => {
+          window.open("https://osu-heatmap.ekga.me/");
+        });
+      });
+      o.blankLine();
+      o.line(o => {
+        o.text("osu! beatmaps are an unusual art form - they combine circles and sliders to represent a song for a rhythm game. ");
+        o.text("Sometimes interesting patterns emerge from following a strict set of rules for placing circles and sliders on the playfield. ");
+        o.text("Other time, the mappers go above and beyond and use the playfield to hide a specific image using gameplay elements. ");
+        o.text("This website generates a heatmap of gameplay elements to reveal those patterns.");
+      });
+      o.blankLine();
+      o.line(o => {
+        o.text("Unfortunately, most beatmaps are designed to be pretty free flowing and don't have any interesting patterns to reveal. ");
+        o.text("In those cases it may still be useful for mappers to see the playfield usage, to make sure the corners are properly used and the patterns are not crowded in one place when it's not intended.");
+      });
+      o.blankLine();
+    });
+    return Promise.resolve();
+  }
+
+  async projectUiua() {
+    await this.terminal.output(o => {
+      o.blankLine();
+      o.line(o => {
+        o.largeText("Uiua modules");
+      });
+      o.separator();
+      o.line(o => {
+        o.link("Uiua", () => {
+          window.open("https://uiua.org/");
+        });
+        o.text(" is a programming language, that I've been fascinated with for a while now. ");
+        o.text("It's a stack based, array oriented language that uses glyphs for array operations, executes from right-to-left, does not use variables and so on. ");
+        o.text("I've never used anything quite like it before, but it's a lot of fun. ");
+      });
+      o.blankLine();
+      o.line(o => {
+        o.text("Most people would consider it to be esoteric and it is a challenge to use it, but it taught me a new programming paradigm that I've found useful in traditional programming too. ");
+        o.text("Even though at first glance it just looks like a fancy calculator, it has native functionality for things like managing the file system, multithreading and working with sockets.");
+      });
+      o.blankLine();
+      o.line(o => {
+        o.text("I have made it my mission to use this language for practical and complex applications. In the process I've created a handful of modules and experimental programs: ");
+      });
+
+      const modules = [
+        {
+          name: "uiua-json",
+          link: "https://github.com/ekgame/uiua-json",
+          description: "JSON parser and serializer.",
+        },
+        {
+          name: "uiua-http",
+          link: "https://github.com/ekgame/uiua-http",
+          description: "HTTP request builder and response parser.",
+        },
+        {
+          name: "uiua-uri-parser",
+          link: "https://github.com/ekgame/uiua-uri-parser",
+          description: "URI parser and serializer.",
+        },
+        {
+          name: "uiua-base64",
+          link: "https://github.com/ekgame/uiua-base64",
+          description: "Base64 encoder and decoder.",
+        },
+        {
+          name: "uiua-websocket",
+          link: "https://github.com/ekgame/uiua-websocket",
+          description: "Experimental websocket client.",
+        },
+      ]
+
+      const longestModuleName = Math.max(...modules.map(module => module.name.length));
+      modules.forEach(module => {
+        o.line(o => {
+          o.link(module.name, () => {
+            window.open(module.link);
+          });
+          o.text(" ".repeat(longestModuleName - module.name.length));
+          o.muted(" - ");
+          o.text(module.description);
+        });
+      });
+
+      o.blankLine();
+    });
+    return Promise.resolve();
+  }
+
   async clear(args) {
     await this.terminal.clear();
     return Promise.resolve();
@@ -170,11 +361,6 @@ class LineBuilder {
   constructor() {
     this.line = document.createElement('div');
     this.line.classList.add('line');
-  }
-
-  centered() {
-    this.line.classList.add('centered');
-    return this;
   }
 
   largeText(text) {
@@ -224,12 +410,17 @@ class LineBuilder {
     return this;
   }
 
+  lineBreak() {
+    this.line.appendChild(document.createElement('br'));
+    return this;
+  }
+
   build() {
     return this.line;
   }
 }
 
-class TerminalOutoutBuilder {
+class TerminalOutputBuilder {
   constructor() {
     this.buffer = [];
   }
@@ -294,8 +485,12 @@ class Terminal {
     }
   }
 
+  scrollToBottom() {
+    this.terminalElement.parentElement.scroll(0, this.terminalElement.scrollHeight);
+  }
+
   async output(builder) {
-    const outputBuilder = new TerminalOutoutBuilder();
+    const outputBuilder = new TerminalOutputBuilder();
     builder(outputBuilder);
     const buffer = outputBuilder.getBuffer();
     let delay = 0;
@@ -308,7 +503,7 @@ class Terminal {
     });
     delay += delayAdd;
 
-    this.terminalElement.parentElement.scroll(0, this.terminalElement.scrollHeight);
+    this.scrollToBottom();
 
     return new Promise(resolve => {
       setTimeout(() => {
@@ -318,13 +513,13 @@ class Terminal {
   }
 
   outputImmediate(builder) {
-    const outputBuilder = new TerminalOutoutBuilder();
+    const outputBuilder = new TerminalOutputBuilder();
     builder(outputBuilder);
     const buffer = outputBuilder.getBuffer();
     buffer.forEach(element => {
       this.addElement(element);
     });
-    this.terminalElement.parentElement.scroll(0, this.terminalElement.scrollHeight);
+    this.scrollToBottom();
   }
 
   getInputElement() {
@@ -376,6 +571,7 @@ class Terminal {
     }
 
     this.isAnimationRunning = true;
+    this.scrollToBottom();
     this.freezeInput();
     await this.animateRemoveInput();
     await this.animateAddInput(input);
