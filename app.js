@@ -22,9 +22,11 @@ class Interpreter {
     if (callback) {
       await callback.call(this, args.slice(1));
     } else {
-      this.terminal.line(o => {
-        o.text("Command not found: ");
-        o.muted(commandName);
+      await this.terminal.output(o => {
+        o.line(o => {
+          o.text("Command not found: ");
+          o.muted(commandName)
+        });
       });
     }
 
@@ -32,7 +34,7 @@ class Interpreter {
   }
 
   async profile(args) {
-    this.terminal.output(o => {
+    await this.terminal.output(o => {
       o.blankLine();
       o.line(o => {
         o.centered();
@@ -85,7 +87,7 @@ class Interpreter {
   }
 
   async contact(args) {
-    this.terminal.output(o => {
+    await this.terminal.output(o => {
       o.blankLine();
       o.line(o => {
         o.text("Email: ");
@@ -99,7 +101,7 @@ class Interpreter {
   }
 
   async links(args) {
-    this.terminal.output(o => {
+    await this.terminal.output(o => {
       o.blankLine();
       o.line(o => {
         o.text("GitHub: ");
@@ -231,8 +233,8 @@ class Terminal {
     this.addInputLine();
   }
 
-  addInputLine() {
-    this.output(o => {
+  async addInputLine() {
+    return this.output(o => {
       o.input();
     });
   }
@@ -244,13 +246,37 @@ class Terminal {
     }
   }
 
-  output(builder) {
+  async output(builder) {
     const outputBuilder = new TerminalOutoutBuilder();
     builder(outputBuilder);
     const buffer = outputBuilder.getBuffer();
-    buffer.forEach(lelement => {
-      this.addElement(lelement);
+    let delay = 0;
+    const delayAdd = 50;
+    buffer.forEach(element => {
+      element.classList.add('reveal');
+      element.style.animationDelay = `${delay}ms`;
+      delay += delayAdd;
+      this.addElement(element);
     });
+    delay += delayAdd;
+
+    this.terminalElement.parentElement.scroll(0, this.terminalElement.scrollHeight);
+
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, delay);
+    });
+  }
+
+  outputImmediate(builder) {
+    const outputBuilder = new TerminalOutoutBuilder();
+    builder(outputBuilder);
+    const buffer = outputBuilder.getBuffer();
+    buffer.forEach(element => {
+      this.addElement(element);
+    });
+    this.terminalElement.parentElement.scroll(0, this.terminalElement.scrollHeight);
   }
 
   getInputElement() {

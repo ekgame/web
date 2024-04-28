@@ -98,3 +98,15 @@ body {
     }
   }
 }
+
+.reveal {
+  opacity: 0;
+  animation: reveal 0.5s forwards;
+  animation-delay: attr(data-delay);
+}
+
+@keyframes reveal {
+  to {
+    opacity: 1;
+  }
+}
