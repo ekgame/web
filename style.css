@@ -62,6 +62,8 @@ body {
 
   .line {
     display: flex;
+    flex-wrap: wrap;
+    white-space: break-spaces;
     margin: 0;
     font-size: 1.25em;
     max-width: 100%;

@@ -129,7 +129,7 @@ class Interpreter {
 
 class LineBuilder {
   constructor() {
-    this.line = document.createElement('pre');
+    this.line = document.createElement('div');
     this.line.classList.add('line');
   }
 
@@ -197,7 +197,7 @@ class TerminalOutoutBuilder {
   }
 
   blankLine() {
-    const blankLine = document.createElement('pre');
+    const blankLine = document.createElement('div');
     blankLine.classList.add('line');
     this.add(blankLine);
   }
