@@ -7,6 +7,7 @@ class Interpreter {
       "links": this.links,
       "clear": this.clear,
       "cls": this.clear,
+      "history": this.history,
     };
   }
 
@@ -37,20 +38,15 @@ class Interpreter {
     await this.terminal.output(o => {
       o.blankLine();
       o.line(o => {
-        o.centered();
         o.largeText("Ernestas Kluonis");
       });
-      o.blankLine();
       o.separator();
-      o.blankLine();
       o.line(o => {
-        o.centered();
         o.text("Software Engineer");
         o.muted(" / ");
         o.text("Full Stack Developer");
       });
       o.line(o => {
-        o.centered();
         o.text("PHP");
         o.muted(" / ");
         o.text("HTML");
@@ -62,16 +58,28 @@ class Interpreter {
         o.text("Kotlin");
       });
       o.line(o => {
-        o.centered();
         o.text("JavaScript");
         o.muted(" / ");
         o.text("TypeScript");
       });
-      o.blankLine();
       o.separator();
+      o.line(o => {
+        o.text("Hello! I'm Ernestas, a generalist software engineer - always ready to bend computers to my will, take on interesting challanges, improve and learn new things along the way.");
+      });
       o.blankLine();
       o.line(o => {
-        o.centered();
+        o.text("One of the most important things for me is to create software that is easy to maintain, understand and use. I have developed my own principles of clean code that I follow in every project I work on.");
+      });
+      o.separator();
+      o.line(o => {
+        o.link("History", () => {
+          this.terminal.animateInput("history");
+        });
+        o.muted(" / ");
+        o.link("Projects", () => {
+          this.terminal.animateInput("projects");
+        });
+        o.muted(" / ");
         o.link("Contact", () => {
           this.terminal.animateInput("contact");
         });
@@ -119,6 +127,37 @@ class Interpreter {
     });
 
     return Promise.resolve();
+  }
+
+  async history(args) {
+    await this.terminal.output(o => {
+      o.blankLine();
+      o.line(o => {
+        o.text("2015 - 2018");
+        o.muted(" / ");
+        o.text("Student at Kaunas University of Technology.");
+      });
+      o.line(o => {
+        o.text("Studied software engineering, graduated with a Bachelor's degree.");
+      });
+      o.separator();
+      o.line(o => {
+        o.text("2018 - present");
+        o.muted(" / ");
+        o.text("Developer at ");
+        o.link("PrestaRock", () => {
+          window.open("https://prestarock.com/");
+        });
+      });
+      o.line(o => {
+        o.text("Started as a junior developer, worked my way up to a mid-level developer.");
+        o.blankLine();
+        o.text("I work on a variety of projects, mostly large e-commerce websites on the PrestaShop platform. My work involves both front-end and back-end development, implementing new features - large and small, fixing bugs.");
+        o.blankLine();
+        o.text("I have developed new technologies on my own time to facilitate working with PrestaShop and developing new modules. I have also introduced the company to new technologies such as the Vue.js framework, which is now used regularly.");
+      });
+      o.blankLine();
+    });
   }
 
   async clear(args) {
@@ -178,6 +217,13 @@ class LineBuilder {
     return this;
   }
 
+  blankLine() {
+    const lineBreak = document.createElement('div');
+    lineBreak.classList.add('line-break');
+    this.line.appendChild(lineBreak);
+    return this;
+  }
+
   build() {
     return this.line;
   }
@@ -203,7 +249,9 @@ class TerminalOutoutBuilder {
   }
 
   separator() {
+    this.blankLine();
     this.add(document.createElement('hr'));
+    this.blankLine();
   }
 
   line(callback) {

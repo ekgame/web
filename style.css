@@ -77,6 +77,12 @@ body {
       font-size: 1.5em;
     }
 
+    .line-break {
+      display: block;
+      flex-basis: 100%;
+      height: 1em;
+    }
+
     .muted {
       color: var(--text-highlight-color);
     }
