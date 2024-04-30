@@ -398,7 +398,7 @@ class LineBuilder {
   input() {
     const span = document.createElement('span');
     span.classList.add('input');
-    span.contentEditable = 'plaintext-only';
+    span.contentEditable = 'true';
     this.line.appendChild(span);
     return this;
   }
